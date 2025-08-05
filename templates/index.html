@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fantasy Football League</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        h2 { margin-top: 40px; }
+        table { border-collapse: collapse; width: 80%; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    </style>
+</head>
+<body>
+    <h1>Fantasy Football League Dashboard</h1>
+	<p><a href="/headtohead">View Head-to-Head Records</a></p>
+
+    <h2>Standings</h2>
+    <table>
+        <tr><th>Rank</th><th>Team</th><th>Record</th></tr>
+        {% for team in teams %}
+        <tr>
+            <td>{{ team.standing }}</td>
+            <td>{{ team.team_name }} ({{ team.owner }})</td>
+            <td>{{ team.wins }}-{{ team.losses }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>This Week's Matchups</h2>
+    <table>
+        <tr><th>Home Team</th><th>Score</th><th>Away Team</th><th>Score</th></tr>
+        {% for matchup in matchups %}
+        <tr>
+            <td>{{ matchup.home_team.team_name }}</td>
+            <td>{{ matchup.home_score }}</td>
+            <td>{{ matchup.away_team.team_name }}</td>
+            <td>{{ matchup.away_score }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
