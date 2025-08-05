@@ -101,5 +101,94 @@ def head_to_head():
         owner_id_to_name=owner_id_to_name
     )
 
+@app.route('/records')
+def league_records():
+    from statistics import mean
+
+    seasons = range(2021, 2024)  # Adjust to your league's active years
+    records = []
+
+    for year in seasons:
+        try:
+            season_league = League(league_id=LEAGUE_ID, year=year, espn_s2=ESPN_S2, swid=SWID)
+        except Exception as e:
+            print(f"Error loading league for {year}: {e}")
+            continue
+
+        highest_game = {'score': 0}
+        lowest_game = {'score': float('inf')}
+        season_scores = defaultdict(float)
+        manager_efficiencies = defaultdict(list)
+
+        for week in range(1, 18):
+            try:
+                scoreboard = season_league.scoreboard(week)
+            except:
+                continue
+
+            for matchup in scoreboard:
+                for team in [matchup.home_team, matchup.away_team]:
+                    if not team:
+                        continue
+
+                    points = team.score
+                    team_name = team.team_name
+                    owners = team.owners
+                    owner_name = owners[0]['displayName'] if owners else 'Unknown'
+
+                    # Record game highs/lows
+                    if points > highest_game['score']:
+                        highest_game = {'score': points, 'team': team_name, 'owner': owner_name, 'week': week}
+                    if points < lowest_game['score']:
+                        lowest_game = {'score': points, 'team': team_name, 'owner': owner_name, 'week': week}
+
+                    # Track season total
+                    season_scores[owner_name] += points
+
+                    # Manager rating (actual / possible)
+                    if hasattr(team, 'lineup') and hasattr(team, 'bench'):
+                        actual = sum(p.points for p in team.lineup if p and hasattr(p, 'points'))
+                        bench = [p for p in team.bench if p and hasattr(p, 'points')]
+                        total_pool = team.lineup + bench
+                        max_possible = 0
+                        used_slots = defaultdict(int)
+
+                        for player in sorted(total_pool, key=lambda p: getattr(p, 'points', 0), reverse=True):
+                            pos = player.position
+                            # Roster limits for manager calc — simplified
+                            max_starters = team.roster.get(pos, 0)
+                            if used_slots[pos] < max_starters:
+                                max_possible += player.points
+                                used_slots[pos] += 1
+
+                        if max_possible > 0:
+                            efficiency = actual / max_possible
+                            manager_efficiencies[owner_name].append(efficiency)
+
+        # Calculate best and worst season scores
+        if season_scores:
+            max_points_owner = max(season_scores.items(), key=lambda x: x[1])
+            min_points_owner = min(season_scores.items(), key=lambda x: x[1])
+        else:
+            max_points_owner = min_points_owner = ('N/A', 0)
+
+        # Best manager efficiency (average over season)
+        best_manager = ('N/A', 0)
+        for owner, efficiencies in manager_efficiencies.items():
+            avg = mean(efficiencies)
+            if avg > best_manager[1]:
+                best_manager = (owner, avg)
+
+        records.append({
+            'year': year,
+            'highest_game': highest_game,
+            'lowest_game': lowest_game,
+            'most_points': max_points_owner,
+            'least_points': min_points_owner,
+            'best_manager': best_manager
+        })
+
+    return render_template('records.html', records=records)
+
 if __name__ == '__main__':
     app.run(debug=True)

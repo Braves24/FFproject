@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">🏆 League Records</h2>
+
+  {% for record in records %}
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Season {{ record.year }}</h5>
+      </div>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <strong>Most Points (Game):</strong> {{ record.highest_game.owner }} ({{ record.highest_game.team }}) – {{ record.highest_game.score }} pts (Week {{ record.highest_game.week }})
+          </li>
+          <li class="list-group-item">
+            <strong>Least Points (Game):</strong> {{ record.lowest_game.owner }} ({{ record.lowest_game.team }}) – {{ record.lowest_game.score }} pts (Week {{ record.lowest_game.week }})
+          </li>
+          <li class="list-group-item">
+            <strong>Most Points (Season):</strong> {{ record.most_points[0] }} – {{ record.most_points[1] | round(2) }} pts
+          </li>
+          <li class="list-group-item">
+            <strong>Least Points (Season):</strong> {{ record.least_points[0] }} – {{ record.least_points[1] | round(2) }} pts
+          </li>
+          <li class="list-group-item">
+            <strong>Best Manager:</strong> {{ record.best_manager[0] }} – {{ (record.best_manager[1] * 100) | round(2) }}%
+          </li>
+        </ul>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}
