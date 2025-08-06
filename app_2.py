@@ -8,8 +8,7 @@ app_2 = Flask(__name__)
 
 # Init
 LEAGUE_ID = 284843139
-ESPN_S2 = 'AEBPqnCavi8uTOeX%2Frgs4bun132KT9Ahi886jtxPhG8GfUqKxMbvcmAsrpQkcHSlcxdkuQOEP%2BYAuoedujiN726GYLDPwMRSS86IfNLVMpMsg3RxlDN0GnW5l4r7MxJBs8zcVc6URrqzkDeU6dDh0kbP6CuwwGmrYHWKzN%2FZsd2H%2FvTQZw2lafEotomG0rLHJqNC0lD%2BYh6IO3rtPdwouQeWoeGYYS9ah1XkhMlxn4H4C6IL1UZyWT5ofF%2BoL1EspfKOx%2FJ%2Ff3PtIanfbSbYoZC8Nw1x5WHw8STgCTglPa%2FOTA%3D%3D'
-SWID = '{A466BE55-1746-4478-A6BE-551746D478A4}'
+
 league = League(league_id=LEAGUE_ID, year=2021, espn_s2=ESPN_S2, swid=SWID)
 
 # print(league.standings())

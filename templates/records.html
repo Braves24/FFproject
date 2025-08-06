@@ -1,34 +1,95 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>League Records</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .record-card {
+      margin-bottom: 20px;
+    }
+    .record-card .card-header {
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <h1 class="mb-4 text-center">🏆 League Records</h1>
 
-{% block content %}
-<div class="container mt-5">
-  <h2 class="mb-4">🏆 League Records</h2>
+    <div class="row">
+      <!-- Most Points in a Game -->
+      <div class="col-md-6 record-card">
+        <div class="card">
+          <div class="card-header bg-success text-white">🔥 Most Points in a Game</div>
+          <div class="card-body">
+            <p><strong>{{ most_points_game.owner }}</strong> ({{ most_points_game.team }})</p>
+            <p>{{ most_points_game.points }} pts — Week {{ most_points_game.week }}, {{ most_points_game.year }}</p>
+          </div>
+        </div>
+      </div>
 
-  {% for record in records %}
-    <div class="card mb-4">
-      <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">Season {{ record.year }}</h5>
+      <!-- Least Points in a Game -->
+      <div class="col-md-6 record-card">
+        <div class="card">
+          <div class="card-header bg-danger text-white">💩 Least Points in a Game</div>
+          <div class="card-body">
+            <p><strong>{{ least_points_game.owner }}</strong> ({{ least_points_game.team }})</p>
+            <p>{{ least_points_game.points }} pts — Week {{ least_points_game.week }}, {{ least_points_game.year }}</p>
+          </div>
+        </div>
       </div>
-      <div class="card-body">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">
-            <strong>Most Points (Game):</strong> {{ record.highest_game.owner }} ({{ record.highest_game.team }}) – {{ record.highest_game.score }} pts (Week {{ record.highest_game.week }})
-          </li>
-          <li class="list-group-item">
-            <strong>Least Points (Game):</strong> {{ record.lowest_game.owner }} ({{ record.lowest_game.team }}) – {{ record.lowest_game.score }} pts (Week {{ record.lowest_game.week }})
-          </li>
-          <li class="list-group-item">
-            <strong>Most Points (Season):</strong> {{ record.most_points[0] }} – {{ record.most_points[1] | round(2) }} pts
-          </li>
-          <li class="list-group-item">
-            <strong>Least Points (Season):</strong> {{ record.least_points[0] }} – {{ record.least_points[1] | round(2) }} pts
-          </li>
-          <li class="list-group-item">
-            <strong>Best Manager:</strong> {{ record.best_manager[0] }} – {{ (record.best_manager[1] * 100) | round(2) }}%
-          </li>
-        </ul>
+
+      <!-- Most Points in a Season -->
+      <div class="col-md-6 record-card">
+        <div class="card">
+          <div class="card-header bg-primary text-white">📈 Most Points in a Season</div>
+          <div class="card-body">
+            <p><strong>{{ most_points_season.owner }}</strong> ({{ most_points_season.team }})</p>
+            <p>{{ most_points_season.points }} pts — {{ most_points_season.year }}</p>
+          </div>
+        </div>
       </div>
+
+      <!-- Least Points in a Season -->
+      <div class="col-md-6 record-card">
+        <div class="card">
+          <div class="card-header bg-warning text-dark">📉 Least Points in a Season</div>
+          <div class="card-body">
+            <p><strong>{{ least_points_season.owner }}</strong> ({{ least_points_season.team }})</p>
+            <p>{{ least_points_season.points }} pts — {{ least_points_season.year }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Best Manager -->
+      <div class="col-md-6 record-card">
+        <div class="card">
+          <div class="card-header bg-info text-dark">🧠 Best Manager</div>
+          <div class="card-body">
+            <p><strong>{{ best_manager.owner }}</strong> ({{ best_manager.manager }})</p>
+            <p>{{ best_manager.efficiency }}% efficiency — {{ best_manager.year }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- The Loyalist -->
+      {% if loyalist %}
+      <div class="col-md-6 record-card">
+        <div class="card">
+          <div class="card-header bg-secondary text-white">❤️ The Loyalist</div>
+          <div class="card-body">
+            <p><strong>{{ loyalist.owner }}</strong></p>
+            <p>Kept {{ loyalist.kept }} out of {{ loyalist.total }} drafted players — {{ loyalist.year }}</p>
+          </div>
+        </div>
+      </div>
+      {% endif %}
     </div>
-  {% endfor %}
-</div>
-{% endblock %}
+  </div>
+</body>
+</html>
